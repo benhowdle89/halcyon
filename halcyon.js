@@ -1,4 +1,4 @@
-var infinite = infinite || (function(win, doc) {
+var Halcyon = Halcyon || (function(win, doc) {
 
     var cache = {},
     initialize = function(opts) {
@@ -63,7 +63,7 @@ var infinite = infinite || (function(win, doc) {
 
 })(window, document);
 
-infinite.init({
+Halcyon.init({
     element: document.getElementById('my-carousel'),
     easing: 'ease-in-out',
     speed: 0.5,
