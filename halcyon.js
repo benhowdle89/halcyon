@@ -6,6 +6,7 @@ var Halcyon = Halcyon || (function(win, doc) {
             throw new Error('You must provide a DOM element');
         }
         cache.element = opts.element;
+        cache.controls = opts.controls || false;
         cache.easing = opts.easing || 'ease-in-out';
         cache.speed = opts.speed + 's' || '0.5s';
         cache.interval = opts.interval || 2000;
@@ -36,11 +37,26 @@ var Halcyon = Halcyon || (function(win, doc) {
         cache.numSlides = ul.children.length;
         cache.sliderWidth = firstLI.getBoundingClientRect().width || firstLI.offsetWidth;
         cache.wrapper = wrapper;
+        cache.wrapper.style.width = cache.sliderWidth * cache.numSlides + 'px';
         cache.currentSlide = 1;
 
-        _slides.next();
-        utils.transition.on();
-        cache.sliderInterval = win.setInterval(_slides.next, cache.interval);
+        if(cache.controls){
+            var prev = doc.createElement('div');
+            prev.className = 'prev-slide';
+            prev.innerText = 'Previous';
+            var next = doc.createElement('div');
+            next.className = 'next-slide';
+            next.innerText = 'Next';
+            cache.element.appendChild(prev);
+            cache.element.appendChild(next);
+            next.addEventListener('click', _slides.next, false);
+        }
+
+        setTimeout(function() {
+            _slides.next();
+            utils.transition.on();
+            cache.sliderInterval = win.setInterval(_slides.next, cache.interval);
+        }, 100);
     },
     utils = {
         transition: {
@@ -94,11 +110,7 @@ var Halcyon = Halcyon || (function(win, doc) {
                             rule: 'transform',
                             value: "translate3d(0, 0, 0)"
                         });
-                        if(cache.vendor == 'webkit'){
-                            setTimeout(utils.transition.on, 0);
-                        } else {
-                            setTimeout(utils.transition.on, (cache.interval / 2));
-                        }
+                        setTimeout(utils.transition.on, ((cache.vendor == 'webkit') ? 0 : (cache.interval / 2)));
                     }, 0);
                 }, (cache.interval / 2));
             }
@@ -123,5 +135,6 @@ Halcyon.init({
     element: document.getElementById('my-carousel'),
     easing: 'ease-in-out',
     speed: 0.5,
-    interval: 1000
+    interval: 5000,
+    controls: true
 });
