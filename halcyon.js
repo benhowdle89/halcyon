@@ -16,13 +16,13 @@ var Halcyon = Halcyon || (function(win, doc) {
         applyCSS = function(opts) {
             switch (opts.rule) {
                 case 'timing':
-                    opts.el.style[cache.vendor+'TimingFunction'] = opts.value;
+                    opts.el.style[cache.vendor + 'TimingFunction'] = opts.value;
                     break;
                 case 'duration':
-                    opts.el.style[cache.vendor+'TransitionDuration'] = opts.value;
+                    opts.el.style[cache.vendor + 'TransitionDuration'] = opts.value;
                     break;
                 case 'transform':
-                    opts.el.style[cache.vendor+'Transform'] = opts.value;
+                    opts.el.style[cache.vendor + 'Transform'] = opts.value;
                     break;
             }
         };
@@ -60,12 +60,12 @@ var Halcyon = Halcyon || (function(win, doc) {
                 applyCSS({
                     el: cache.wrapper,
                     rule: 'duration',
-                    value: 0
+                    value: ""
                 });
                 applyCSS({
                     el: cache.wrapper,
                     rule: 'timing',
-                    value: 0
+                    value: ""
                 });
             }
         },
@@ -87,13 +87,19 @@ var Halcyon = Halcyon || (function(win, doc) {
                 // We need to reset. Do this halfway through interval
                 setTimeout(function() {
                     utils.transition.off();
-                    cache.currentSlide = 2;
-                    applyCSS({
-                        el: cache.wrapper,
-                        rule: 'transform',
-                        value: "translate3d(0, 0, 0)"
-                    });
-                    setTimeout(utils.transition.on, 0);
+                    setTimeout(function() {
+                        cache.currentSlide = 2;
+                        applyCSS({
+                            el: cache.wrapper,
+                            rule: 'transform',
+                            value: "translate3d(0, 0, 0)"
+                        });
+                        if(cache.vendor == 'webkit'){
+                            setTimeout(utils.transition.on, 0);
+                        } else {
+                            setTimeout(utils.transition.on, (cache.interval / 2));
+                        }
+                    }, 0);
                 }, (cache.interval / 2));
             }
 
@@ -117,5 +123,5 @@ Halcyon.init({
     element: document.getElementById('my-carousel'),
     easing: 'ease-in-out',
     speed: 0.5,
-    interval: 2000
+    interval: 1000
 });
