@@ -26,13 +26,13 @@ var Halcyon = Halcyon || (function(win, doc) {
         applyCSS = function(opts) {
             switch (opts.rule) {
                 case 'timing':
-                    opts.el.style[cache.vendor + 'TimingFunction'] = opts.value;
+                    opts.el.style[cache.vendor+'TimingFunction'] = opts.value;
                     break;
                 case 'duration':
-                    opts.el.style[cache.vendor + 'TransitionDuration'] = opts.value;
+                    opts.el.style[cache.vendor+'TransitionDuration'] = opts.value;
                     break;
                 case 'transform':
-                    opts.el.style[cache.vendor + 'Transform'] = opts.value;
+                    opts.el.style[cache.vendor+'Transform'] = opts.value;
                     break;
             }
         };
@@ -78,12 +78,12 @@ var Halcyon = Halcyon || (function(win, doc) {
                 applyCSS({
                     el: cache.wrapper,
                     rule: 'duration',
-                    value: ""
+                    value: 0
                 });
                 applyCSS({
                     el: cache.wrapper,
                     rule: 'timing',
-                    value: ""
+                    value: 0
                 });
             }
         },
@@ -115,6 +115,13 @@ var Halcyon = Halcyon || (function(win, doc) {
                         });
                         setTimeout(utils.transition.on, ((cache.vendor == 'webkit') ? 0 : (cache.interval / 2)));
                     }, 0);
+                    cache.currentSlide = 2;
+                    applyCSS({
+                        el: cache.wrapper,
+                        rule: 'transform',
+                        value: "translate3d(0, 0, 0)"
+                    });
+                    setTimeout(utils.transition.on, 0);
                 }, (cache.interval / 2));
             }
 
@@ -138,5 +145,5 @@ Halcyon.init({
     element: document.getElementById('my-carousel'),
     easing: 'linear',
     speed: 0.5,
-    interval: 2500
+    interval: 2000
 });
