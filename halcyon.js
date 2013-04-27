@@ -5,12 +5,30 @@ var Halcyon = Halcyon || (function(win, doc) {
         if (!opts.element) {
             throw new Error('You must provide a DOM element');
         }
-        cache.element = opts.element;
+        cache.element = ((typeof jQuery !== 'undefined') && opts.element instanceof jQuery) ? opts.element[0] : opts.element;
         cache.controls = opts.controls || false;
         cache.easing = opts.easing || 'ease-in-out';
         cache.speed = opts.speed + 's' || '0.5s';
         cache.interval = opts.interval || 2000;
         cache.vendor = utils.vendor();
+        cache.resetWidths = function() {
+            utils.transition.off();
+            var i = cache.wrapper.children.length;
+            var elWidth = cache.element.getBoundingClientRect().width || cache.element.offsetWidth;
+            while (i--) {
+                cache.wrapper.children[i].style.width = elWidth + 'px';
+            }
+            cache.wrapper.style.width = elWidth + 'px';
+            utils.transition.on();
+        };
+        cache.widths = function() {
+            cache.sliderWidth = firstLI.getBoundingClientRect().width || firstLI.offsetWidth;
+            var i = cache.wrapper.children.length;
+            while (i--) {
+                cache.wrapper.children[i].style.width = cache.sliderWidth + 'px';
+            }
+            cache.wrapper.style.width = cache.sliderWidth * cache.numSlides + 'px';
+        };
 
         var vendors = ['moz', 'webkit', 'o', 'ms', ''];
 
@@ -28,35 +46,29 @@ var Halcyon = Halcyon || (function(win, doc) {
             }
         };
 
-        var wrapper = cache.element.children[0],
-            ul = wrapper.children[0],
-            firstLI = ul.children[0];
+        cache.wrapper = cache.element.querySelector('ul');
+        var firstLI = cache.wrapper.children[0];
 
-        ul.appendChild(firstLI.cloneNode(true));
+        cache.wrapper.appendChild(firstLI.cloneNode(true));
+        cache.numSlides = cache.wrapper.children.length;
 
-        cache.numSlides = ul.children.length;
-        cache.sliderWidth = firstLI.getBoundingClientRect().width || firstLI.offsetWidth;
-        cache.wrapper = wrapper;
-        cache.wrapper.style.width = cache.sliderWidth * cache.numSlides + 'px';
+        cache.widths();
+
         cache.currentSlide = 1;
 
-        if(cache.controls){
-            var prev = doc.createElement('div');
-            prev.className = 'prev-slide';
-            prev.innerText = 'Previous';
-            var next = doc.createElement('div');
-            next.className = 'next-slide';
-            next.innerText = 'Next';
-            cache.element.appendChild(prev);
-            cache.element.appendChild(next);
-            next.addEventListener('click', _slides.next, false);
-        }
-
         setTimeout(function() {
-            _slides.next();
+            _slides.slide('next');
             utils.transition.on();
-            cache.sliderInterval = win.setInterval(_slides.next, cache.interval);
+            cache.sliderInterval = win.setInterval(function() {
+                _slides.slide('next');
+            }, cache.interval);
         }, 100);
+
+        window.addEventListener('resize', function(){
+            cache.resetWidths();
+            cache.widths();
+        }, false);
+
     },
     utils = {
         transition: {
@@ -97,7 +109,8 @@ var Halcyon = Halcyon || (function(win, doc) {
         }
     },
     _slides = {
-        next: function() {
+        slide: function() {
+
             if ((cache.currentSlide) == cache.numSlides) {
 
                 // We need to reset. Do this halfway through interval
@@ -133,8 +146,7 @@ var Halcyon = Halcyon || (function(win, doc) {
 
 Halcyon.init({
     element: document.getElementById('my-carousel'),
-    easing: 'ease-in-out',
+    easing: 'linear',
     speed: 0.5,
-    interval: 5000,
-    controls: true
+    interval: 2500
 });

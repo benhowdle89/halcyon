@@ -13,15 +13,16 @@
 		}
 		.infiniteCarousel {
 			overflow: hidden;
-			width: 800px;
+			width: 80%;
 			margin: auto;
 		}
-		.wrapper {
-			height: 250px;
-			width: 3200px;
+
+		.infiniteCarousel ul {
+			display: block;	
 		}
-		.wrapper li {
-		    width: 800px;
+
+		.infiniteCarousel li {
+			width: 100%;
 		    height: 250px;
 		    background: red;
 		    color: white;
@@ -32,13 +33,11 @@
 	</head>
 <body>
 <div class="infiniteCarousel" id="my-carousel">
-    <div class="wrapper">
-        <ul>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-        </ul>
-    </div>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+    </ul>
 </div>
 <script type="text/javascript" src="halcyon.js"></script>
 </body>
