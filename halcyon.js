@@ -11,16 +11,7 @@ var Halcyon = Halcyon || (function(win, doc) {
         cache.speed = opts.speed + 's' || '0.5s';
         cache.interval = opts.interval || 2000;
         cache.vendor = utils.vendor();
-        cache.resetWidths = function() {
-            utils.transition.off();
-            var i = cache.wrapper.children.length;
-            var elWidth = cache.element.getBoundingClientRect().width || cache.element.offsetWidth;
-            while (i--) {
-                cache.wrapper.children[i].style.width = elWidth + 'px';
-            }
-            cache.wrapper.style.width = elWidth + 'px';
-            utils.transition.on();
-        };
+
         cache.widths = function() {
             cache.sliderWidth = firstLI.getBoundingClientRect().width || firstLI.offsetWidth;
             var i = cache.wrapper.children.length;
@@ -62,10 +53,9 @@ var Halcyon = Halcyon || (function(win, doc) {
             cache.sliderInterval = win.setInterval(function() {
                 _slides.slide('next');
             }, cache.interval);
-        }, 100);
+        }, 0);
 
-        window.addEventListener('resize', function(){
-            cache.resetWidths();
+        window.addEventListener('resize', function() {
             cache.widths();
         }, false);
 
